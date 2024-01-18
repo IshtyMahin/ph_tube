@@ -82,36 +82,63 @@ function createItem(items) {
   if (items.length == 0) {
     item_container.innerHTML = `
       <div class="d-flex flex-column gap-3 pt-5 justify-content-center align-items-center">
-            <img src="./icon.png">
-            <h3>Opps!!Sorry,There is no content here</h3>
+        <img src="./icon.png">
+        <h3>Oops!! Sorry, There is no content here</h3>
       </div>
     `;
   } else {
     for (let item of items) {
-      console.log(item);
-
       let item_div = document.createElement("div");
-      item_div.classList.add("card", "card-style");
+      item_div.classList.add("card", "card-style"); 
 
       const verifiedIcon = item.authors[0].verified
-        ? '<i class="fa-solid fa-certificate icon-certificate"><i class="fa-solid fa-check icon-check" ></i></i>'
+        ? '<i class="fa-solid fa-certificate icon-certificate"><i class="fa-solid fa-check icon-check"></i></i>'
         : "";
 
+      const postDate = calculatePostedDate(item.others.posted_date);
+
       item_div.innerHTML = `
-                    <img src="${item.thumbnail}" class="card-img-top w-100 h-50" alt="...">
-                    <div class="card-body">
-                        <img src=${item.authors[0].profile_picture} class="profile-picture " }>
-                        <div>
-                            <h5 class="pt-1">${item.title}</h5>
-                            <p>${item.authors[0].profile_name} <span>${verifiedIcon} </span></p>
-                            <p>${item.others.views} views</p>
-                        </div>
-                    </div>
-            `;
+
+        <img src="${item.thumbnail}" class="card-img-top w-100 h-50 position-relative" alt="...">
+        <div class="card-body">
+          <img src=${item.authors[0].profile_picture} class="profile-picture">
+          <p class="posted-date">${postDate}</p>
+          <div>
+            <h5 class="pt-1">${item.title}</h5>
+            <p>${item.authors[0].profile_name} <span>${verifiedIcon}</span></p>
+            <p>${item.others.views} views</p>
+          </div>
+        </div>
+      `;
+
       item_container.appendChild(item_div);
     }
   }
 }
+
+
+function calculatePostedDate(postDate) {
+  const days = Math.floor(postDate / (60 * 60 * 24));
+  const hours = Math.floor((postDate % (60 * 60 * 24)) / (60 * 60));
+  const minutes = Math.floor((postDate % (60 * 60)) / 60);
+
+  let s = "";
+
+  if (days > 0) {
+    s = s + `${days} days `;
+  }
+  if (hours > 0) {
+    s = s + `${hours} hours `;
+  }
+  if (minutes > 0) {
+    s = s + `${minutes} minutes `;
+  }
+  if (days > 0 || hours > 0 || minutes > 0) {
+     s = s + "ago";
+  } 
+  return s.trim();
+}
+
 
 function blogItem() {
   category_container.innerHTML = "";
